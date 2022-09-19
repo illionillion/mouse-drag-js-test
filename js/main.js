@@ -71,6 +71,6 @@ const pointerMove = e => {
         dragarea.style.transform = `translate(${x}px, ${y}px)` // 開始位置
         dragarea.style.width = (width) + 'px'
         dragarea.style.height = (height) + 'px'
-        output.innerHTML = `X:${pageX}, Y:${pageY}, Width:${width}, height:${height}`
+        output.innerHTML = `X:${pageX}, Y:${pageY}, Width:${width}, Height:${height}`
     }
 }
