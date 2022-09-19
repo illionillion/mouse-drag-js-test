@@ -1,0 +1,29 @@
+* {
+    margin: 0;
+    padding: 0;
+}
+
+#output {
+    position: fixed;
+    border: 1px solid #000;
+    user-select: none;
+    -webkit-user-select: none;
+    -moz-user-select: none;
+    z-index: 2;
+    background-color: #fff;
+}
+
+#dragarea {
+    position: absolute;
+    border: 1px solid blue;
+    background-color: aqua;
+    cursor: move;
+}
+
+.hidden {
+    visibility: hidden;
+}
+
+#dragarea.hidden {
+    cursor: auto;
+}

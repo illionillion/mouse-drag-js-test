@@ -1,0 +1,11 @@
+{
+  "name": "mouse-drag-js-test",
+  "version": "1.0.0",
+  "description": "",
+  "main": "index.js",
+  "scripts": {
+    "server": "http-server -o"
+  },
+  "author": "",
+  "license": "ISC"
+}
