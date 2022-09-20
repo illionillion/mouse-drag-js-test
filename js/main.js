@@ -25,7 +25,7 @@ const dragarea = document.getElementById('dragarea')
 window.addEventListener('DOMContentLoaded', e => {
 
     // document.addEventListener('mousemove', pointerMove)
-    document.addEventListener(Ev.move, pointerMove)
+    document.addEventListener(Ev.move, pointerMove, {passive: false})
 
     document.addEventListener(Ev.down, e => {
         // console.log('クリック開始');
@@ -54,6 +54,8 @@ window.addEventListener('DOMContentLoaded', e => {
  * @param {MouseEvent} e 
  */
 const pointerMove = e => {
+
+    e.preventDefault()
 
     const pageX = e.pageX || e.changedTouches[0].pageX
     const pageY = e.pageY || e.changedTouches[0].pageY
