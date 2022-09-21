@@ -2,18 +2,6 @@
 
 import Dragarea from "./Dragarea.js"
 
-const setting = {
-    click: false,
-    startPoint: {
-        x:0,
-        y:0
-    },
-    endPoint: {
-        x:0,
-        y:0
-    }
-}
-
 const dragList = {}
 
 const Ev = {
@@ -23,15 +11,17 @@ const Ev = {
 }
 
 const output = document.getElementById('output')
-// const dragarea = document.getElementById('dragarea')
-let dragarea = document.getElementById('dragarea')
-
+const screen = document.getElementById('screen')
+const list = document.getElementById('list')
 
 window.addEventListener('DOMContentLoaded', e => {
 
-    document.addEventListener(Ev.move, pointerMove, {passive: false})
+    screen.addEventListener(Ev.move, pointerMove, {passive: false})
+    list.addEventListener(Ev.move, e => {
+        output.classList.add('hidden')
+    }, {passive: false})
 
-    document.addEventListener(Ev.down, e => {
+    screen.addEventListener(Ev.down, e => {
         // console.log('クリック開始');
 
         const draareaobj = new Dragarea()
@@ -43,15 +33,14 @@ window.addEventListener('DOMContentLoaded', e => {
         // ここで要素生成・DOMにマウント
         const ele = document.createElement('div')
         ele.className='dragarea '
-        document.body.appendChild(ele)
+        screen.appendChild(ele)
         draareaobj.ele = ele
 
-        // dragarea.classList.remove('hidden')
         dragList[Dragarea.count] = draareaobj
         // console.log(dragList[Dragarea.count]);
         
     })
-    document.addEventListener(Ev.up, e => {
+    screen.addEventListener(Ev.up, e => {
         // console.log('クリック終了');
 
         const draareaobj = dragList[Dragarea.count]
@@ -59,15 +48,13 @@ window.addEventListener('DOMContentLoaded', e => {
         Dragarea.click = false
         draareaobj.endPoint.x = e.pageX || e.changedTouches[0].pageX
         draareaobj.endPoint.y = e.pageY || e.changedTouches[0].pageY
-
-        
-        // dragarea.classList.add('hidden')
-        // dragList[Dragarea.count].ele.style.transform = `translate(${0}px, ${0}px)` // 開始位置
-        // dragList[Dragarea.count].ele.style.width = (0) + 'px'
-        // dragList[Dragarea.count].ele.style.height = (0) + 'px'
         
         Dragarea.count++
         console.log(dragList);
+
+        const liEle = document.createElement('li')
+        liEle.innerHTML = `No.${draareaobj.id}<br/>${JSON.stringify(draareaobj.startPoint)}<br/>${JSON.stringify(draareaobj.endPoint)}`
+        list.querySelector('ul').appendChild(liEle)
     })
 
 })
@@ -79,6 +66,9 @@ window.addEventListener('DOMContentLoaded', e => {
 const pointerMove = e => {
 
     e.preventDefault()
+    e.stopPropagation()
+
+    output.classList.remove('hidden')
 
     if ((!e.pageX || !e.pageY) && !e.changedTouches) {
         return
@@ -86,6 +76,8 @@ const pointerMove = e => {
     
     const pageX = e.pageX || e.changedTouches[0].pageX
     const pageY = e.pageY || e.changedTouches[0].pageY
+
+    // console.log(pageX);
     
     output.style.transform = `translate(${pageX + 10}px, ${pageY + 10}px)`
     output.innerHTML = `X:${pageX}, Y:${pageY}`
@@ -98,9 +90,26 @@ const pointerMove = e => {
         const y = pageY > draareaobj.startPoint.y ? draareaobj.startPoint.y : pageY
         const height = pageY > draareaobj.startPoint.y ? pageY - draareaobj.startPoint.y : draareaobj.startPoint.y - pageY
         // console.log('ドラッグ中');
+        // console.log(x);
+        // console.dir(screen);
+        console.log(percentW(width)+"%");
+        console.log(percentH(height)+"%");
         dragList[Dragarea.count].ele.style.transform = `translate(${x}px, ${y}px)` // 開始位置
         dragList[Dragarea.count].ele.style.width = (width) + 'px'
         dragList[Dragarea.count].ele.style.height = (height) + 'px'
         output.innerHTML = `X:${pageX}, Y:${pageY}, Width:${width}, Height:${height}`
     }
+}
+
+const percentW = w => {
+    return w / screen.clientWidth * 100
+}
+const percentH = h => {
+    return h / screen.clientHeight * 100
+}
+const percentX = x => {
+    return x / screen.translate * 100
+}
+const percentY = y => {
+    return y / screen.clientHeight * 100
 }
