@@ -17,7 +17,7 @@ body {
     background-color: #fff;
 }
 
-#dragarea {
+#dragarea, .dragarea {
     position: absolute;
     border: 1px solid blue;
     background-color: aqua;
