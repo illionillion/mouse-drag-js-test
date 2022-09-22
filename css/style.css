@@ -41,11 +41,14 @@ body {
 #screen {
     flex: 7;
 }
-
+.frame-hr{
+    z-index: 2;
+}
 #list {
     flex: 3;
     z-index: 3;
     overflow-y: auto;
+    background-color: #fff;
 }
 #list ul{
     padding-left: 0;
@@ -53,4 +56,9 @@ body {
 }
 #list ul li{
     border-bottom:  1px solid #000;
+}
+
+.hover {
+    /* opacity: 0.7; */
+    border: 1px dotted blue;
 }
