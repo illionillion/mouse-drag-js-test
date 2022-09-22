@@ -10,6 +10,8 @@ const Ev = {
     up: 'ontouchend' in document ? 'touchend': 'mouseup',
 }
 
+export { Ev }
+
 const output = document.getElementById('output')
 const screen = document.getElementById('screen')
 const list = document.getElementById('list')
@@ -20,9 +22,19 @@ window.addEventListener('DOMContentLoaded', e => {
     list.addEventListener(Ev.move, e => {
         output.classList.add('hidden')
     }, {passive: false})
+    output.addEventListener(Ev.move, e => {
+        // console.log(e);
+        e.preventDefault()
+        e.stopPropagation()
+    })
 
     screen.addEventListener(Ev.down, e => {
         // console.log('クリック開始');
+
+        // if (Dragarea.hover) {
+        //     Dragarea.click = true
+        //     return
+        // }
 
         const draareaobj = new Dragarea()
 
@@ -32,7 +44,7 @@ window.addEventListener('DOMContentLoaded', e => {
 
         // ここで要素生成・DOMにマウント
         const ele = document.createElement('div')
-        ele.className='dragarea '
+        ele.className='dragarea'
         screen.appendChild(ele)
         draareaobj.ele = ele
 
@@ -42,13 +54,18 @@ window.addEventListener('DOMContentLoaded', e => {
     })
     screen.addEventListener(Ev.up, e => {
         // console.log('クリック終了');
+        // if (Dragarea.hover) {
+        //     Dragarea.click = false
+        //     return
+        // }
 
         const draareaobj = dragList[Dragarea.count]
 
         Dragarea.click = false
         draareaobj.endPoint.x = e.pageX || e.changedTouches[0].pageX
         draareaobj.endPoint.y = e.pageY || e.changedTouches[0].pageY
-        
+        draareaobj.setEvent()
+
         Dragarea.count++
         console.log(dragList);
 
@@ -83,6 +100,7 @@ const pointerMove = e => {
     output.innerHTML = `X:${pageX}, Y:${pageY}`
     
     
+    // const draareaobj = !Dragarea.hover ? dragList[Dragarea.count] : Dragarea.hoverEle
     const draareaobj = dragList[Dragarea.count]
     if (Dragarea.click) {
         const x = pageX > draareaobj.startPoint.x ? draareaobj.startPoint.x : pageX
@@ -90,26 +108,22 @@ const pointerMove = e => {
         const y = pageY > draareaobj.startPoint.y ? draareaobj.startPoint.y : pageY
         const height = pageY > draareaobj.startPoint.y ? pageY - draareaobj.startPoint.y : draareaobj.startPoint.y - pageY
         // console.log('ドラッグ中');
-        // console.log(x);
-        // console.dir(screen);
-        console.log(percentW(width)+"%");
-        console.log(percentH(height)+"%");
-        dragList[Dragarea.count].ele.style.transform = `translate(${x}px, ${y}px)` // 開始位置
-        dragList[Dragarea.count].ele.style.width = (width) + 'px'
-        dragList[Dragarea.count].ele.style.height = (height) + 'px'
+        // console.log(percentW(width)+"%");
+        // console.log(percentH(height)+"%");
+        draareaobj.ele.style.transform = `translate(${x}px, ${y}px)` // 開始位置
+        draareaobj.ele.style.width = (width) + 'px'
+        draareaobj.ele.style.height = (height) + 'px'
+        // if (!Dragarea.hover) {
+        //     draareaobj.ele.style.width = (width) + 'px'
+        //     draareaobj.ele.style.height = (height) + 'px'
+        // }
         output.innerHTML = `X:${pageX}, Y:${pageY}, Width:${width}, Height:${height}`
     }
 }
 
-const percentW = w => {
-    return w / screen.clientWidth * 100
+const percentWX = wx => {
+    return wx / screen.clientWidth * 100
 }
-const percentH = h => {
-    return h / screen.clientHeight * 100
-}
-const percentX = x => {
-    return x / screen.translate * 100
-}
-const percentY = y => {
-    return y / screen.clientHeight * 100
+const percentHY = hy => {
+    return hy / screen.clientHeight * 100
 }
