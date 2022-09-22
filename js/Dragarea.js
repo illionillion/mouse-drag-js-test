@@ -8,6 +8,10 @@ export default class Dragarea {
 
     static hover = false
     static hoverEle = undefined
+    static position = {
+        x:0,
+        y:0
+    }
 
     id = 0
 
@@ -30,7 +34,7 @@ export default class Dragarea {
             e.preventDefault()
             e.stopPropagation()
     
-            // console.log('ホバー！！');
+            console.log('ホバー！！');
             this.ele.classList.add('hover')
             Dragarea.hover = true
             Dragarea.hoverEle = this
@@ -40,7 +44,7 @@ export default class Dragarea {
             e.preventDefault()
             e.stopPropagation()
     
-            // console.log('ホバー解除！！');
+            console.log('ホバー解除！！');
             this.ele.classList.remove('hover')
             Dragarea.hover = false
             Dragarea.hoverEle = undefined

@@ -31,46 +31,53 @@ window.addEventListener('DOMContentLoaded', e => {
     screen.addEventListener(Ev.down, e => {
         // console.log('クリック開始');
 
-        // if (Dragarea.hover) {
-        //     Dragarea.click = true
-        //     return
-        // }
+        if (Dragarea.hover) {
+            Dragarea.click = true
+            Dragarea.position.x = e.pageX || e.changedTouches[0].pageX
+            Dragarea.position.y = e.pageY || e.changedTouches[0].pageY
+            // console.log(Dragarea.hoverEle);
+            return
+        }
 
-        const draareaobj = new Dragarea()
+        const dragareaobj = new Dragarea()
 
         Dragarea.click = true
-        draareaobj.startPoint.x = e.pageX || e.changedTouches[0].pageX
-        draareaobj.startPoint.y = e.pageY || e.changedTouches[0].pageY
+        dragareaobj.startPoint.x = e.pageX || e.changedTouches[0].pageX
+        dragareaobj.startPoint.y = e.pageY || e.changedTouches[0].pageY
 
         // ここで要素生成・DOMにマウント
         const ele = document.createElement('div')
         ele.className='dragarea'
         screen.appendChild(ele)
-        draareaobj.ele = ele
+        dragareaobj.ele = ele
 
-        dragList[Dragarea.count] = draareaobj
+        dragList[Dragarea.count] = dragareaobj
         // console.log(dragList[Dragarea.count]);
         
     })
     screen.addEventListener(Ev.up, e => {
         // console.log('クリック終了');
-        // if (Dragarea.hover) {
-        //     Dragarea.click = false
-        //     return
-        // }
+        if (Dragarea.hover) {
+            Dragarea.click = false
+            Dragarea.position.x = 0
+            Dragarea.position.y = 0
 
-        const draareaobj = dragList[Dragarea.count]
+            return
+        }
 
+        const dragareaobj = dragList[Dragarea.count]
         Dragarea.click = false
-        draareaobj.endPoint.x = e.pageX || e.changedTouches[0].pageX
-        draareaobj.endPoint.y = e.pageY || e.changedTouches[0].pageY
-        draareaobj.setEvent()
+        if(!dragareaobj) return
+
+        dragareaobj.endPoint.x = e.pageX || e.changedTouches[0].pageX
+        dragareaobj.endPoint.y = e.pageY || e.changedTouches[0].pageY
+        dragareaobj.setEvent()
 
         Dragarea.count++
         console.log(dragList);
 
         const liEle = document.createElement('li')
-        liEle.innerHTML = `No.${draareaobj.id}<br/>${JSON.stringify(draareaobj.startPoint)}<br/>${JSON.stringify(draareaobj.endPoint)}`
+        liEle.innerHTML = `No.${dragareaobj.id}<br/>${JSON.stringify(dragareaobj.startPoint)}<br/>${JSON.stringify(dragareaobj.endPoint)}`
         list.querySelector('ul').appendChild(liEle)
     })
 
@@ -100,24 +107,38 @@ const pointerMove = e => {
     output.innerHTML = `X:${pageX}, Y:${pageY}`
     
     
-    // const draareaobj = !Dragarea.hover ? dragList[Dragarea.count] : Dragarea.hoverEle
-    const draareaobj = dragList[Dragarea.count]
-    if (Dragarea.click) {
-        const x = pageX > draareaobj.startPoint.x ? draareaobj.startPoint.x : pageX
-        const width = pageX > draareaobj.startPoint.x ? pageX - draareaobj.startPoint.x : draareaobj.startPoint.x - pageX
-        const y = pageY > draareaobj.startPoint.y ? draareaobj.startPoint.y : pageY
-        const height = pageY > draareaobj.startPoint.y ? pageY - draareaobj.startPoint.y : draareaobj.startPoint.y - pageY
+    const dragareaobj = !Dragarea.hover ? dragList[Dragarea.count] : Dragarea.hoverEle
+    // console.log(dragareaobj);
+    // const dragareaobj = dragList[Dragarea.count]
+    if (Dragarea.click && !Dragarea.hover && dragareaobj) {
+        const x = pageX > dragareaobj.startPoint.x ? dragareaobj.startPoint.x : pageX
+        const width = pageX > dragareaobj.startPoint.x ? pageX - dragareaobj.startPoint.x : dragareaobj.startPoint.x - pageX
+        const y = pageY > dragareaobj.startPoint.y ? dragareaobj.startPoint.y : pageY
+        const height = pageY > dragareaobj.startPoint.y ? pageY - dragareaobj.startPoint.y : dragareaobj.startPoint.y - pageY
         // console.log('ドラッグ中');
         // console.log(percentW(width)+"%");
         // console.log(percentH(height)+"%");
-        draareaobj.ele.style.transform = `translate(${x}px, ${y}px)` // 開始位置
-        draareaobj.ele.style.width = (width) + 'px'
-        draareaobj.ele.style.height = (height) + 'px'
-        // if (!Dragarea.hover) {
-        //     draareaobj.ele.style.width = (width) + 'px'
-        //     draareaobj.ele.style.height = (height) + 'px'
-        // }
+        console.log(x+":"+y);
+        dragareaobj.ele.style.transform = `translate(${x}px, ${y}px)` // 開始位置
+        dragareaobj.ele.style.width = (width) + 'px'
+        dragareaobj.ele.style.height = (height) + 'px'
         output.innerHTML = `X:${pageX}, Y:${pageY}, Width:${width}, Height:${height}`
+    } else if(Dragarea.click && Dragarea.hover && dragareaobj){
+        
+        console.log(Dragarea.hoverEle);
+
+        const abx = pageX - Dragarea.position.x
+        const aby = pageY - Dragarea.position.y
+        Dragarea.position.x = pageX
+        Dragarea.position.y = pageY
+        Dragarea.hoverEle.startPoint.x += abx
+        Dragarea.hoverEle.startPoint.y += aby
+        const x = Dragarea.hoverEle.startPoint.x
+        const y = Dragarea.hoverEle.startPoint.y
+
+        dragareaobj.ele.style.transform = `translate(${x}px, ${y}px)` // 開始位置
+
+        // console.log('hover');
     }
 }
 
