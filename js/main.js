@@ -29,13 +29,17 @@ window.addEventListener('DOMContentLoaded', e => {
     })
 
     screen.addEventListener(Ev.down, e => {
-        // console.log('クリック開始');
 
+        // console.log('クリック開始');
+        if(Dragarea.click) return
         if (Dragarea.hover) {
             Dragarea.click = true
+            Dragarea.drag = true
             Dragarea.position.x = e.pageX || e.changedTouches[0].pageX
             Dragarea.position.y = e.pageY || e.changedTouches[0].pageY
-            // console.log(Dragarea.hoverEle);
+            console.log(Dragarea.hoverEle);
+            Dragarea.hoverEle.ele.classList.add('current')
+
             return
         }
 
@@ -57,18 +61,18 @@ window.addEventListener('DOMContentLoaded', e => {
     })
     screen.addEventListener(Ev.up, e => {
         // console.log('クリック終了');
-        if (Dragarea.hover) {
+        const dragareaobj = dragList[Dragarea.count]
+        if (Dragarea.hover || !dragareaobj) {
             Dragarea.click = false
+            Dragarea.drag = false
             Dragarea.position.x = 0
             Dragarea.position.y = 0
-
+            Dragarea?.hoverEle?.ele.classList.remove('current')
+            
             return
         }
-
-        const dragareaobj = dragList[Dragarea.count]
         Dragarea.click = false
-        if(!dragareaobj) return
-
+        
         dragareaobj.endPoint.x = e.pageX || e.changedTouches[0].pageX
         dragareaobj.endPoint.y = e.pageY || e.changedTouches[0].pageY
         dragareaobj.setEvent()
@@ -107,10 +111,10 @@ const pointerMove = e => {
     output.innerHTML = `X:${pageX}, Y:${pageY}`
     
     
-    const dragareaobj = !Dragarea.hover ? dragList[Dragarea.count] : Dragarea.hoverEle
+    const dragareaobj = !Dragarea.drag ? dragList[Dragarea.count] : Dragarea.hoverEle
     // console.log(dragareaobj);
     // const dragareaobj = dragList[Dragarea.count]
-    if (Dragarea.click && !Dragarea.hover && dragareaobj) {
+    if (Dragarea.click && !Dragarea.drag && dragareaobj) {
         const x = pageX > dragareaobj.startPoint.x ? dragareaobj.startPoint.x : pageX
         const width = pageX > dragareaobj.startPoint.x ? pageX - dragareaobj.startPoint.x : dragareaobj.startPoint.x - pageX
         const y = pageY > dragareaobj.startPoint.y ? dragareaobj.startPoint.y : pageY
@@ -123,7 +127,7 @@ const pointerMove = e => {
         dragareaobj.ele.style.width = (width) + 'px'
         dragareaobj.ele.style.height = (height) + 'px'
         output.innerHTML = `X:${pageX}, Y:${pageY}, Width:${width}, Height:${height}`
-    } else if(Dragarea.click && Dragarea.hover && dragareaobj){
+    } else if(Dragarea.click && Dragarea.drag && dragareaobj){
         
         console.log(Dragarea.hoverEle);
 
