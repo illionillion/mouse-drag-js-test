@@ -54,6 +54,7 @@ export default class Dragarea {
         this.ele.addEventListener('mouseover', e => {
             e.preventDefault()
             e.stopPropagation()
+            if(Dragarea.drag) return
 
             
             console.log('ホバー！！');
