@@ -60,7 +60,8 @@ body {
 
 .hover {
     /* opacity: 0.7; */
-    border: 1px dotted blue;
+    background-color: rgb(0, 166, 255);
+    border: 1px dotted rgb(34, 0, 255);
 }
 
 .current {
