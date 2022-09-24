@@ -22,11 +22,11 @@ window.addEventListener('DOMContentLoaded', e => {
     list.addEventListener(Ev.move, e => {
         output.classList.add('hidden')
     }, {passive: false})
-    output.addEventListener(Ev.move, e => {
-        // console.log(e);
-        e.preventDefault()
-        e.stopPropagation()
-    })
+    // output.addEventListener(Ev.move, e => {
+    //     // console.log(e);
+    //     e.preventDefault()
+    //     e.stopPropagation()
+    // })
 
     screen.addEventListener(Ev.down, e => {
 
@@ -71,6 +71,7 @@ window.addEventListener('DOMContentLoaded', e => {
             Dragarea.drag = false
             Dragarea.position.x = 0
             Dragarea.position.y = 0
+            Dragarea.handledrag = false
             Dragarea?.hoverEle?.ele.classList.remove('current')
             // console.log(dragareaobj);
             
