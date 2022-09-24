@@ -30,15 +30,15 @@ window.addEventListener('DOMContentLoaded', e => {
 
     screen.addEventListener(Ev.down, e => {
 
-        // console.log('クリック開始');
+        console.log('クリック開始');
         if(Dragarea.click) return
         if (Dragarea.hover) {
             Dragarea.click = true
             Dragarea.drag = true
             Dragarea.position.x = e.pageX || e.changedTouches[0].pageX
             Dragarea.position.y = e.pageY || e.changedTouches[0].pageY
-            console.log(Dragarea.hoverEle);
             Dragarea.hoverEle.ele.classList.add('current')
+            // console.log(Dragarea.hoverEle);
 
             return
         }
@@ -60,7 +60,7 @@ window.addEventListener('DOMContentLoaded', e => {
         
     })
     screen.addEventListener(Ev.up, e => {
-        // console.log('クリック終了');
+        console.log('クリック終了');
         const dragareaobj = dragList[Dragarea.count]
         if (Dragarea.hover || !dragareaobj) {
             Dragarea.click = false
@@ -68,6 +68,7 @@ window.addEventListener('DOMContentLoaded', e => {
             Dragarea.position.x = 0
             Dragarea.position.y = 0
             Dragarea?.hoverEle?.ele.classList.remove('current')
+            // console.log(dragareaobj);
             
             return
         }
@@ -78,11 +79,12 @@ window.addEventListener('DOMContentLoaded', e => {
         dragareaobj.setEvent()
 
         Dragarea.count++
-        console.log(dragList);
+        // console.log(dragList);
 
         const liEle = document.createElement('li')
-        liEle.innerHTML = `No.${dragareaobj.id}<br/>${JSON.stringify(dragareaobj.startPoint)}<br/>${JSON.stringify(dragareaobj.endPoint)}`
+        liEle.innerHTML = `No.${dragareaobj.id}<br/>${JSON.stringify(dragareaobj.startPoint)}`
         list.querySelector('ul').appendChild(liEle)
+        dragareaobj.liEle = liEle
     })
 
 })
@@ -122,25 +124,27 @@ const pointerMove = e => {
         // console.log('ドラッグ中');
         // console.log(percentW(width)+"%");
         // console.log(percentH(height)+"%");
-        console.log(x+":"+y);
+        // console.log(x+":"+y);
         dragareaobj.ele.style.transform = `translate(${x}px, ${y}px)` // 開始位置
         dragareaobj.ele.style.width = (width) + 'px'
         dragareaobj.ele.style.height = (height) + 'px'
         output.innerHTML = `X:${pageX}, Y:${pageY}, Width:${width}, Height:${height}`
     } else if(Dragarea.click && Dragarea.drag && dragareaobj){
+        // console.log('ドラッグ中');
         
-        console.log(Dragarea.hoverEle);
-
-        const abx = pageX - Dragarea.position.x
+        const abx = pageX - Dragarea.position.x // マウスが動いた差分計算
         const aby = pageY - Dragarea.position.y
-        Dragarea.position.x = pageX
+        Dragarea.position.x = pageX // 差分比較位置更新
         Dragarea.position.y = pageY
-        Dragarea.hoverEle.startPoint.x += abx
-        Dragarea.hoverEle.startPoint.y += aby
-        const x = Dragarea.hoverEle.startPoint.x
-        const y = Dragarea.hoverEle.startPoint.y
+        const style = window.getComputedStyle(dragareaobj.ele);
+        const matrix = new WebKitCSSMatrix(style.transform); // 実際のtranslateのXY値取得
+        dragareaobj.startPoint.x = matrix.m41 + abx // 差分反映
+        dragareaobj.startPoint.y = matrix.m42 + aby
+        const x = dragareaobj.startPoint.x
+        const y = dragareaobj.startPoint.y
 
         dragareaobj.ele.style.transform = `translate(${x}px, ${y}px)` // 開始位置
+        dragareaobj.liEle.innerHTML = `No.${dragareaobj.id}<br/>${JSON.stringify(dragareaobj.startPoint)}`
 
         // console.log('hover');
     }

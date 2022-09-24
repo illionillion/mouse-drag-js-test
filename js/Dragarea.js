@@ -25,6 +25,7 @@ export default class Dragarea {
         y:0
     }
     ele = undefined
+    liele = undefined
 
     constructor(){
         this.id = Dragarea.count
