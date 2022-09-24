@@ -9,6 +9,7 @@ export default class Dragarea {
     static hover = false
     static hoverEle = undefined
     static drag = false
+    static handledrag = false
     static position = {
         x:0,
         y:0
@@ -26,6 +27,7 @@ export default class Dragarea {
     }
     ele = undefined
     liele = undefined
+    handleEle = undefined
 
     constructor(){
         this.id = Dragarea.count
@@ -77,8 +79,16 @@ export default class Dragarea {
             Dragarea.hoverEle = undefined
             // this.ele.addEventListener(Ev.up, this.down)
         })
+
+        this.handleEle.addEventListener(Ev.down, e => {
+            Dragarea.handledrag = true
+        })
+        this.handleEle.addEventListener(Ev.up, e => {
+            Dragarea.handledrag = false
+        })
         // this.ele.addEventListener(Ev.down, this.down)
 
+        // console.log(getComputedStyle(this.ele, "::after"));
 
     }
 }

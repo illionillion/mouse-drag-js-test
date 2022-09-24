@@ -24,6 +24,19 @@ body {
     cursor: move;
 }
 
+.dragarea-handle {
+    content: '';
+    width: 20px;
+    height: 20px;
+    display: block;
+    /* background-color: #000; */
+    border: 1px dotted rgb(34, 0, 255);
+    position: absolute;
+    bottom: -10px;
+    right: -10px;
+    cursor: nwse-resize;
+}
+
 .hidden {
     visibility: hidden;
 }
@@ -66,4 +79,5 @@ body {
 
 .current {
     z-index: 2;
+    border: 1px solid rgb(34, 0, 255);
 }

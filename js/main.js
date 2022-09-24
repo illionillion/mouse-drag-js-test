@@ -51,9 +51,13 @@ window.addEventListener('DOMContentLoaded', e => {
 
         // ここで要素生成・DOMにマウント
         const ele = document.createElement('div')
+            const handleEle = document.createElement('div')
+            handleEle.className = 'dragarea-handle'
+            ele.appendChild(handleEle)
         ele.className='dragarea'
         screen.appendChild(ele)
         dragareaobj.ele = ele
+        dragareaobj.handleEle = handleEle
 
         dragList[Dragarea.count] = dragareaobj
         // console.log(dragList[Dragarea.count]);
@@ -74,15 +78,15 @@ window.addEventListener('DOMContentLoaded', e => {
         }
         Dragarea.click = false
         
-        dragareaobj.endPoint.x = e.pageX || e.changedTouches[0].pageX
-        dragareaobj.endPoint.y = e.pageY || e.changedTouches[0].pageY
+        dragareaobj.endPoint.x = e.pageX || e.changedTouches[0].pageX - dragareaobj.startPoint.x
+        dragareaobj.endPoint.y = e.pageY || e.changedTouches[0].pageY - dragareaobj.startPoint.y
         dragareaobj.setEvent()
 
         Dragarea.count++
         // console.log(dragList);
 
         const liEle = document.createElement('li')
-        liEle.innerHTML = `No.${dragareaobj.id}<br/>${JSON.stringify(dragareaobj.startPoint)}`
+        liEle.innerHTML = `No.${dragareaobj.id}<br/>${JSON.stringify(dragareaobj.startPoint)}<br/>{"w":${dragareaobj.ele.style.width.replace('px','')}, "h"${dragareaobj.ele.style.height.replace('px','')}}`
         list.querySelector('ul').appendChild(liEle)
         dragareaobj.liEle = liEle
     })
@@ -95,8 +99,8 @@ window.addEventListener('DOMContentLoaded', e => {
  */
 const pointerMove = e => {
 
-    e.preventDefault()
-    e.stopPropagation()
+    // e.preventDefault()
+    // e.stopPropagation()
 
     output.classList.remove('hidden')
 
@@ -129,24 +133,49 @@ const pointerMove = e => {
         dragareaobj.ele.style.width = (width) + 'px'
         dragareaobj.ele.style.height = (height) + 'px'
         output.innerHTML = `X:${pageX}, Y:${pageY}, Width:${width}, Height:${height}`
+
     } else if(Dragarea.click && Dragarea.drag && dragareaobj){
         // console.log('ドラッグ中');
-        
+
+        // console.log(pageX);
+        // console.log(dragareaobj.endPoint.x);
+        // console.log(pageY);
+        // console.log(dragareaobj.endPoint.y);
         const abx = pageX - Dragarea.position.x // マウスが動いた差分計算
         const aby = pageY - Dragarea.position.y
         Dragarea.position.x = pageX // 差分比較位置更新
         Dragarea.position.y = pageY
         const style = window.getComputedStyle(dragareaobj.ele);
         const matrix = new WebKitCSSMatrix(style.transform); // 実際のtranslateのXY値取得
+        dragareaobj.endPoint.x += abx // 差分反映 // いらない？
+        dragareaobj.endPoint.y += aby
+
+        console.log(Dragarea.handledrag);
+        if (Dragarea.handledrag) {
+            console.log('疑似要素');
+
+            // const width = pageX - dragareaobj.startPoint.x
+            // const height = pageY - dragareaobj.startPoint.y
+            const width = parseInt(dragareaobj.ele.style.width.replace('px','')) + abx
+            const height = parseInt(dragareaobj.ele.style.height.replace('px','')) + aby
+
+            dragareaobj.ele.style.width = (width) + 'px'
+            dragareaobj.ele.style.height = (height) + 'px'    
+            output.innerHTML = `X:${pageX}, Y:${pageY}, Width:${width}, Height:${height}`
+            dragareaobj.liEle.innerHTML = `No.${dragareaobj.id}<br/>${JSON.stringify(dragareaobj.startPoint)}<br/>{"w":${dragareaobj.ele.style.width.replace('px','')}, "h"${dragareaobj.ele.style.height.replace('px','')}}`
+
+            return
+        }
+        
         dragareaobj.startPoint.x = matrix.m41 + abx // 差分反映
         dragareaobj.startPoint.y = matrix.m42 + aby
         const x = dragareaobj.startPoint.x
         const y = dragareaobj.startPoint.y
 
         dragareaobj.ele.style.transform = `translate(${x}px, ${y}px)` // 開始位置
-        dragareaobj.liEle.innerHTML = `No.${dragareaobj.id}<br/>${JSON.stringify(dragareaobj.startPoint)}`
+        dragareaobj.liEle.innerHTML = `No.${dragareaobj.id}<br/>${JSON.stringify(dragareaobj.startPoint)}<br/>{"w":${dragareaobj.ele.style.width.replace('px','')}, "h"${dragareaobj.ele.style.height.replace('px','')}}`
 
-        // console.log('hover');
+        console.log('hover');
     }
 }
 
