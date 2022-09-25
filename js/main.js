@@ -15,6 +15,7 @@ export { Ev }
 const output = document.getElementById('output')
 const screen = document.getElementById('screen')
 const list = document.getElementById('list')
+const listTemplate = document.getElementById('list-item-template')
 
 window.addEventListener('DOMContentLoaded', e => {
 
@@ -86,10 +87,16 @@ window.addEventListener('DOMContentLoaded', e => {
         Dragarea.count++
         // console.log(dragList);
 
-        const liEle = document.createElement('li')
-        liEle.innerHTML = `No.${dragareaobj.id}<br/>${JSON.stringify(dragareaobj.startPoint)}<br/>{"w":${dragareaobj.ele.style.width.replace('px','')}, "h"${dragareaobj.ele.style.height.replace('px','')}}`
+        // const liEle = document.createElement('li')
+        console.dir(listTemplate);
+        const liEle = listTemplate.content.cloneNode(true)
+        // console.dir(liEle.querySelector('input.xpx'));
+        liEle.querySelector('.li-number').innerHTML = dragareaobj.id
         list.querySelector('ul').appendChild(liEle)
-        dragareaobj.liEle = liEle
+        // dragareaobj.liele = liEle
+        dragareaobj.liele = list.querySelectorAll(`ul li`)[dragareaobj.id]
+        dragareaobj.setListEle()
+        dragareaobj.setListEvent()
     })
 
 })
@@ -151,9 +158,9 @@ const pointerMove = e => {
         dragareaobj.endPoint.x += abx // 差分反映 // いらない？
         dragareaobj.endPoint.y += aby
 
-        console.log(Dragarea.handledrag);
+        // console.log(Dragarea.handledrag);
         if (Dragarea.handledrag) {
-            console.log('疑似要素');
+            // console.log('疑似要素');
 
             // const width = pageX - dragareaobj.startPoint.x
             // const height = pageY - dragareaobj.startPoint.y
@@ -163,7 +170,7 @@ const pointerMove = e => {
             dragareaobj.ele.style.width = (width) + 'px'
             dragareaobj.ele.style.height = (height) + 'px'    
             output.innerHTML = `X:${pageX}, Y:${pageY}, Width:${width}, Height:${height}`
-            dragareaobj.liEle.innerHTML = `No.${dragareaobj.id}<br/>${JSON.stringify(dragareaobj.startPoint)}<br/>{"w":${dragareaobj.ele.style.width.replace('px','')}, "h"${dragareaobj.ele.style.height.replace('px','')}}`
+            dragareaobj.setListEle()
 
             return
         }
@@ -174,9 +181,9 @@ const pointerMove = e => {
         const y = dragareaobj.startPoint.y
 
         dragareaobj.ele.style.transform = `translate(${x}px, ${y}px)` // 開始位置
-        dragareaobj.liEle.innerHTML = `No.${dragareaobj.id}<br/>${JSON.stringify(dragareaobj.startPoint)}<br/>{"w":${dragareaobj.ele.style.width.replace('px','')}, "h"${dragareaobj.ele.style.height.replace('px','')}}`
+        dragareaobj.setListEle()
 
-        console.log('hover');
+        // console.log('hover');
     }
 }
 

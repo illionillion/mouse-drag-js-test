@@ -91,4 +91,52 @@ export default class Dragarea {
         // console.log(getComputedStyle(this.ele, "::after"));
 
     }
+
+    setListEle = () => {
+        // console.dir(this.liele.querySelector);
+        // console.dir(this.liele);
+        // console.dir(this.liele.querySelector('input.xpx'));
+        this.liele.querySelector('.xpx').value = this.startPoint.x
+        this.liele.querySelector('.ypx').value = this.startPoint.y
+        this.liele.querySelector('.wpx').value = this.ele.style.width.replace('px','')
+        this.liele.querySelector('.hpx').value = this.ele.style.height.replace('px','')
+        // this.liele.innerHTML = `No.${this.id}<br/>${JSON.stringify(this.startPoint)}<br/>{"w":${this.ele.style.width.replace('px','')}, "h"${this.ele.style.height.replace('px','')}}`
+        
+    }
+    
+    setListEvent = () => {
+        this.liele.querySelector('.xpx').addEventListener('input', this.upDateVal)
+        this.liele.querySelector('.ypx').addEventListener('input', this.upDateVal)
+        this.liele.querySelector('.wpx').addEventListener('input', this.upDateVal)
+        this.liele.querySelector('.hpx').addEventListener('input', this.upDateVal)
+    }
+
+    upDateVal = e => {
+        const type = e.target.dataset.pxType
+        const val = e.target.value
+        // console.log(type);
+        // console.log(val);
+
+        switch (type) {
+            case 'x':
+                this.startPoint.x = val
+                this.ele.style.transform = `translate(${val}px, ${this.startPoint.y}px)` // 開始位置
+                break;
+            case 'y':
+                this.startPoint.y = val
+                this.ele.style.transform = `translate(${this.startPoint.x}px, ${val}px)` // 開始位置
+                break;
+            case 'w':
+                this.endPoint.x = val
+                this.ele.style.width = (val) + 'px'
+                break;
+            case 'h':
+                this.endPoint.y = val
+                this.ele.style.height = (val) + 'px'    
+                break;
+        
+            default:
+                break;
+        }
+    }
 }
