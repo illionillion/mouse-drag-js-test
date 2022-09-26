@@ -24,7 +24,7 @@ window.addEventListener('DOMContentLoaded', e => {
         output.classList.add('hidden')
     }, {passive: false})
     // output.addEventListener(Ev.move, e => {
-    //     // console.log(e);
+    //     console.log(e);
     //     e.preventDefault()
     //     e.stopPropagation()
     // })
