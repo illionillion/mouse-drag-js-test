@@ -1,4 +1,4 @@
-import { Ev } from "./main.js"
+import { Ev, list, screen } from "./main.js"
 
 export default class Dragarea {
 
@@ -109,6 +109,15 @@ export default class Dragarea {
         this.liele.querySelector('.ypx').addEventListener('input', this.upDateVal)
         this.liele.querySelector('.wpx').addEventListener('input', this.upDateVal)
         this.liele.querySelector('.hpx').addEventListener('input', this.upDateVal)
+        this.liele.querySelector('.delete-button').addEventListener('click', this.deleteObj)
+    }
+
+    deleteObj = () => {
+        // console.log('delete!!');
+        screen.removeChild(this.ele)
+        console.log(this.liele);
+        list.querySelector('ul').removeChild(this.liele)
+        Dragarea.count--
     }
 
     upDateVal = e => {

@@ -10,12 +10,13 @@ const Ev = {
     up: 'ontouchend' in document ? 'touchend': 'mouseup',
 }
 
-export { Ev }
 
 const output = document.getElementById('output')
 const screen = document.getElementById('screen')
 const list = document.getElementById('list')
 const listTemplate = document.getElementById('list-item-template')
+
+export { Ev, output, screen, list }
 
 window.addEventListener('DOMContentLoaded', e => {
 
@@ -88,7 +89,7 @@ window.addEventListener('DOMContentLoaded', e => {
         // console.log(dragList);
 
         // const liEle = document.createElement('li')
-        console.dir(listTemplate);
+        // console.dir(listTemplate);
         const liEle = listTemplate.content.cloneNode(true)
         // console.dir(liEle.querySelector('input.xpx'));
         liEle.querySelector('.li-number').innerHTML = dragareaobj.id
@@ -120,7 +121,9 @@ const pointerMove = e => {
     const pageY = e.pageY || e.changedTouches[0].pageY
 
     // console.log(pageX);
+
     
+    // outputが画面外に行かないようにする処理も加えたい
     output.style.transform = `translate(${pageX + 10}px, ${pageY + 10}px)`
     output.innerHTML = `X:${pageX}, Y:${pageY}`
     
