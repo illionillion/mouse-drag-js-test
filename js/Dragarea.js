@@ -14,6 +14,7 @@ export default class Dragarea {
         x:0,
         y:0
     }
+    static dragList = {}
 
     id = 0
 
@@ -96,6 +97,7 @@ export default class Dragarea {
         // console.dir(this.liele.querySelector);
         // console.dir(this.liele);
         // console.dir(this.liele.querySelector('input.xpx'));
+        this.liele.querySelector('.li-number').innerHTML = this.id
         this.liele.querySelector('.xpx').value = this.startPoint.x
         this.liele.querySelector('.ypx').value = this.startPoint.y
         this.liele.querySelector('.wpx').value = this.ele.style.width.replace('px','')
@@ -117,7 +119,6 @@ export default class Dragarea {
         screen.removeChild(this.ele)
         console.log(this.liele);
         list.querySelector('ul').removeChild(this.liele)
-        Dragarea.count--
     }
 
     upDateVal = e => {

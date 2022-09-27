@@ -2,14 +2,11 @@
 
 import Dragarea from "./Dragarea.js"
 
-const dragList = {}
-
 const Ev = {
     down: 'ontouchstart' in document ? 'touchstart': 'mousedown',
     move: 'ontouchmove' in document ? 'touchmove': 'mousemove',
     up: 'ontouchend' in document ? 'touchend': 'mouseup',
 }
-
 
 const output = document.getElementById('output')
 const screen = document.getElementById('screen')
@@ -61,13 +58,13 @@ window.addEventListener('DOMContentLoaded', e => {
         dragareaobj.ele = ele
         dragareaobj.handleEle = handleEle
 
-        dragList[Dragarea.count] = dragareaobj
-        // console.log(dragList[Dragarea.count]);
+        Dragarea.dragList[Dragarea.count] = dragareaobj
+        // console.log(Dragarea.dragList[Dragarea.count]);
         
     })
     screen.addEventListener(Ev.up, e => {
         console.log('クリック終了');
-        const dragareaobj = dragList[Dragarea.count]
+        const dragareaobj = Dragarea.dragList[Dragarea.count]
         if (Dragarea.hover || !dragareaobj) {
             Dragarea.click = false
             Dragarea.drag = false
@@ -86,16 +83,19 @@ window.addEventListener('DOMContentLoaded', e => {
         dragareaobj.setEvent()
 
         Dragarea.count++
-        // console.log(dragList);
+        // console.log(Dragarea.dragList);
 
         // const liEle = document.createElement('li')
         // console.dir(listTemplate);
         const liEle = listTemplate.content.cloneNode(true)
         // console.dir(liEle.querySelector('input.xpx'));
-        liEle.querySelector('.li-number').innerHTML = dragareaobj.id
+        // console.log(liEle.querySelector('li'));
+        liEle.querySelector('li').dataset.dragId = dragareaobj.id
+        // liEle.querySelector('.li-number').innerHTML = dragareaobj.id
         list.querySelector('ul').appendChild(liEle)
         // dragareaobj.liele = liEle
-        dragareaobj.liele = list.querySelectorAll(`ul li`)[dragareaobj.id]
+        // console.log(list.querySelector(`ul li[data-drag-id = "${dragareaobj.id}"]`));
+        dragareaobj.liele = list.querySelector(`ul li[data-drag-id = "${dragareaobj.id}"]`)
         dragareaobj.setListEle()
         dragareaobj.setListEvent()
     })
@@ -128,9 +128,9 @@ const pointerMove = e => {
     output.innerHTML = `X:${pageX}, Y:${pageY}`
     
     
-    const dragareaobj = !Dragarea.drag ? dragList[Dragarea.count] : Dragarea.hoverEle
+    const dragareaobj = !Dragarea.drag ? Dragarea.dragList[Dragarea.count] : Dragarea.hoverEle
     // console.log(dragareaobj);
-    // const dragareaobj = dragList[Dragarea.count]
+    // const dragareaobj = Dragarea.dragList[Dragarea.count]
     if (Dragarea.click && !Dragarea.drag && dragareaobj) {
         const x = pageX > dragareaobj.startPoint.x ? dragareaobj.startPoint.x : pageX
         const width = pageX > dragareaobj.startPoint.x ? pageX - dragareaobj.startPoint.x : dragareaobj.startPoint.x - pageX
