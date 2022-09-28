@@ -122,9 +122,13 @@ const pointerMove = e => {
 
     // console.log(pageX);
 
+    // outputの一番右端の座標
+    const outputX = pageX + 10 + output.clientWidth < screen.clientWidth ? pageX + 10 : pageX - output.clientWidth - 10
+    // outputの一番右下の座標
+    const outputY = pageY + 10 + output.clientHeight < screen.clientHeight ? pageY + 10 : pageY - output.clientHeight - 10
     
-    // outputが画面外に行かないようにする処理も加えたい
-    output.style.transform = `translate(${pageX + 10}px, ${pageY + 10}px)`
+    // outputが画面外に行かないようにする
+    output.style.transform = `translate(${outputX}px, ${outputY}px)`
     output.innerHTML = `X:${pageX}, Y:${pageY}`
     
     
