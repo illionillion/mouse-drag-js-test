@@ -117,7 +117,7 @@ export default class Dragarea {
     deleteObj = () => {
         // console.log('delete!!');
         screen.removeChild(this.ele)
-        console.log(this.liele);
+        // console.log(this.liele);
         list.querySelector('ul').removeChild(this.liele)
     }
 

@@ -58,15 +58,36 @@ body {
 .frame-hr{
     z-index: 2;
 }
+
+#control {
+    border-bottom: 1px solid #000;
+    flex: 1;
+    display: flex;
+    min-height: 100px;
+}
+#control div{
+    flex: 1;
+    text-align: center;
+    display: flex;
+}
+#control div input{
+    width: 80%;
+    height: 80%;
+    margin: auto;
+}
+
 #list {
     flex: 3;
     z-index: 3;
-    overflow-y: auto;
     background-color: #fff;
+    display: flex;
+    flex-direction: column;
 }
 #list ul{
+    overflow-y: auto;
     padding-left: 0;
     list-style: none;
+    flex: 7;
 }
 #list ul li{
     border-bottom:  1px solid #000;
