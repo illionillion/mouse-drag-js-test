@@ -133,8 +133,6 @@ const pointerMove = e => {
     
     
     const dragareaobj = !Dragarea.drag ? Dragarea.dragList[Dragarea.count] : Dragarea.hoverEle
-    // console.log(dragareaobj);
-    // const dragareaobj = Dragarea.dragList[Dragarea.count]
     if (Dragarea.click && !Dragarea.drag && dragareaobj) {
         const x = pageX > dragareaobj.startPoint.x ? dragareaobj.startPoint.x : pageX
         const width = pageX > dragareaobj.startPoint.x ? pageX - dragareaobj.startPoint.x : dragareaobj.startPoint.x - pageX
@@ -152,36 +150,31 @@ const pointerMove = e => {
     } else if(Dragarea.click && Dragarea.drag && dragareaobj){
         // console.log('ドラッグ中');
 
-        // console.log(pageX);
-        // console.log(dragareaobj.endPoint.x);
-        // console.log(pageY);
-        // console.log(dragareaobj.endPoint.y);
         const abx = pageX - Dragarea.position.x // マウスが動いた差分計算
         const aby = pageY - Dragarea.position.y
         Dragarea.position.x = pageX // 差分比較位置更新
         Dragarea.position.y = pageY
-        const style = window.getComputedStyle(dragareaobj.ele);
-        const matrix = new WebKitCSSMatrix(style.transform); // 実際のtranslateのXY値取得
         dragareaobj.endPoint.x += abx // 差分反映 // いらない？
         dragareaobj.endPoint.y += aby
-
+        
         // console.log(Dragarea.handledrag);
         if (Dragarea.handledrag) {
             // console.log('疑似要素');
-
+            
             // const width = pageX - dragareaobj.startPoint.x
             // const height = pageY - dragareaobj.startPoint.y
             const width = parseInt(dragareaobj.ele.style.width.replace('px','')) + abx
             const height = parseInt(dragareaobj.ele.style.height.replace('px','')) + aby
-
+            
             dragareaobj.ele.style.width = (width) + 'px'
             dragareaobj.ele.style.height = (height) + 'px'    
             output.innerHTML = `X:${pageX}, Y:${pageY}, Width:${width}, Height:${height}`
             dragareaobj.setListEle()
-
+            
             return
         }
-        
+        const style = window.getComputedStyle(dragareaobj.ele);
+        const matrix = new WebKitCSSMatrix(style.transform); // 実際のtranslateのXY値取得
         dragareaobj.startPoint.x = matrix.m41 + abx // 差分反映
         dragareaobj.startPoint.y = matrix.m42 + aby
         const x = dragareaobj.startPoint.x
