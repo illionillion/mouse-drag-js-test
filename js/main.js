@@ -100,6 +100,12 @@ window.addEventListener('DOMContentLoaded', e => {
         dragareaobj.setListEvent()
     })
 
+    document.querySelector('.reset-button input').addEventListener("click", e => {
+        screen.innerHTML = ""
+        // console.log(this.liele);
+        list.querySelector('ul').innerHTML = ""
+    })
+
 })
 
 /**
