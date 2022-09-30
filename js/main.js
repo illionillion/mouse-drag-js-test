@@ -135,6 +135,8 @@ const pointerMove = e => {
     
     // outputが画面外に行かないようにする
     output.style.transform = `translate(${outputX}px, ${outputY}px)`
+    // output.style.left = pageX + "px" // 挙動が鈍くなる
+    // output.style.top = pageY + "px"
     output.innerHTML = `X:${pageX}, Y:${pageY}`
     
     
