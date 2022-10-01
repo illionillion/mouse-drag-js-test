@@ -52,6 +52,7 @@ window.addEventListener('DOMContentLoaded', e => {
         const ele = document.createElement('div')
             const handleEle = document.createElement('div')
             handleEle.className = 'dragarea-handle'
+            handleEle.innerHTML = dragareaobj.id
             ele.appendChild(handleEle)
         ele.className='dragarea'
         screen.appendChild(ele)

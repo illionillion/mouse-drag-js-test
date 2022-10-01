@@ -21,21 +21,26 @@ body {
 .dragarea {
     position: absolute;
     border: 1px solid blue;
-    background-color: aqua;
+    background-color: rgba(0, 255, 255, 0.8);
     cursor: move;
 }
 
 .dragarea-handle {
-    content: '';
     width: 20px;
     height: 20px;
-    display: block;
-    /* background-color: #000; */
+    /* display: flex; */
     border: 1px dotted rgb(34, 0, 255);
+    background-color: rgba(255, 255, 255, 0.8);
     position: absolute;
     bottom: -10px;
     right: -10px;
     cursor: nwse-resize;
+    text-align: center;
+    line-height: 21px;
+    /* justify-content: center; */
+    user-select: none;
+    -webkit-user-select: none;
+    -moz-user-select: none;
 }
 
 .hidden {
@@ -120,7 +125,7 @@ body {
 
 .hover {
     /* opacity: 0.7; */
-    background-color: rgb(0, 166, 255);
+    background-color: rgba(0, 166, 255, 0.8);
     border: 1px dotted rgb(34, 0, 255);
 }
 
