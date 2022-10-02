@@ -9,14 +9,20 @@
     <script type="module" src="./js/main.js"></script>
 </head>
 <body>
-    <div id="output"></div>
     <section id="frame">
-        <div id="screen"></div>
+        <div id="screen">
+            <div id="img-frame">
+                <div id="output"></div>
+
+            </div>
+            <!-- <img src="" alt="" class="hidden"> -->
+        </div>
         <hr class="frame-hr">
         <div id="list">
             <div id="control">
-                <div class="create-button">
-                    <input type="button" value="作成">
+                <div class="file-button">
+                    <!-- <input type="button" value="作成"> -->
+                    <input type="file" name="" id="img-input" accept=".png,.jpg,.jpeg">
                 </div>
                 <div class="reset-button">
                     <input type="button" value="リセット">
