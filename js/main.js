@@ -24,7 +24,7 @@ window.addEventListener('DOMContentLoaded', e => {
     }, {passive: false})
     // output.addEventListener(Ev.move, e => {
     //     console.log(e);
-    //     e.preventDefault()
+    //     // e.preventDefault()
     //     e.stopPropagation()
     // })
 
@@ -65,8 +65,8 @@ window.addEventListener('DOMContentLoaded', e => {
         Dragarea.click = true
         dragareaobj.startPoint.x = e.offsetX || e.changedTouches[0].offsetX
         dragareaobj.startPoint.y = e.offsetY || e.changedTouches[0].offsetY
-        console.log(e.offsetX);
-        console.log(e.offsetY);
+        // console.log(e.offsetX);
+        // console.log(e.offsetY);
         // ここで要素生成・DOMにマウント
         const ele = document.createElement('div')
             const handleEle = document.createElement('div')
@@ -76,7 +76,15 @@ window.addEventListener('DOMContentLoaded', e => {
         ele.className='dragarea'
         screen.appendChild(ele)
         dragareaobj.ele = ele
-        dragareaobj.handleEle = handleEle
+        // dragareaobj.ele.addEventListener(Ev.move, e => {
+        //     // e.preventDefault();
+        //     e.stopPropagation()
+        // })
+        // dragareaobj.handleEle = handleEle
+        // dragareaobj.handleEle.addEventListener(Ev.move, e => {
+        //     // e.preventDefault();
+        //     e.stopPropagation()
+        // })
 
         Dragarea.dragList[Dragarea.count] = dragareaobj
         // console.log(Dragarea.dragList[Dragarea.count]);
@@ -136,6 +144,7 @@ const pointerMove = e => {
 
     // e.preventDefault()
     // e.stopPropagation()
+    console.log(e.target);
 
     output.classList.remove('hidden')
 
