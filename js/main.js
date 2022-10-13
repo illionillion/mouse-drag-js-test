@@ -81,6 +81,12 @@ window.addEventListener('DOMContentLoaded', e => {
         
         dragareaobj.endPoint.x = e.pageX || e.changedTouches[0].pageX - dragareaobj.startPoint.x
         dragareaobj.endPoint.y = e.pageY || e.changedTouches[0].pageY - dragareaobj.startPoint.y
+        if (!dragareaobj.ele.style.width) {
+            dragareaobj.ele.style.width = '0px'
+        }
+        if (!dragareaobj.ele.style.height) {
+            dragareaobj.ele.style.height = '0px'
+        }
         dragareaobj.setEvent()
 
         Dragarea.count++
