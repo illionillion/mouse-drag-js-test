@@ -9,7 +9,7 @@ const Ev = {
 }
 
 const output = document.getElementById('output')
-const screen = document.getElementById('img-frame')
+const screen = document.getElementById('screen')
 const list = document.getElementById('list')
 const listTemplate = document.getElementById('list-item-template')
 const imgInput = document.getElementById('img-input')
@@ -24,26 +24,26 @@ window.addEventListener('DOMContentLoaded', e => {
     }, {passive: false})
     // output.addEventListener(Ev.move, e => {
     //     console.log(e);
-    //     // e.preventDefault()
+    //     e.preventDefault()
     //     e.stopPropagation()
     // })
-
-    imgInput.addEventListener('change', e => {
-        console.dir(imgInput.value);
-        console.dir(imgInput.files[0]);
-        const file = imgInput.files[0]
-        const reader = new FileReader()
-        if (file) {
-            reader.addEventListener('load', e => {
-                const imgEle = document.createElement('img')
-                imgEle.src = e.target.result
-                // imgEle.addEventListener(Ev.move, e => {e.preventDefault();e.stopPropagation()})
-                screen.appendChild(imgEle)
-                console.log(e.target.result);
-            })
-            reader.readAsDataURL(file)
-        }
-    })
+    
+    // imgInput.addEventListener('change', e => {
+    //     console.dir(imgInput.value);
+    //     console.dir(imgInput.files[0]);
+    //     const file = imgInput.files[0]
+    //     const reader = new FileReader()
+    //     if (file) {
+    //         reader.addEventListener('load', e => {
+    //             const imgEle = document.createElement('img')
+    //             imgEle.src = e.target.result
+    //             // imgEle.addEventListener(Ev.move, e => {e.preventDefault();e.stopPropagation()})
+    //             screen.appendChild(imgEle)
+    //             console.log(e.target.result);
+    //         })
+    //         reader.readAsDataURL(file)
+    //     }
+    // })
 
     screen.addEventListener(Ev.down, e => {
 
@@ -52,8 +52,8 @@ window.addEventListener('DOMContentLoaded', e => {
         if (Dragarea.hover) {
             Dragarea.click = true
             Dragarea.drag = true
-            Dragarea.position.x = e.offsetX || e.changedTouches[0].offsetX
-            Dragarea.position.y = e.offsetY || e.changedTouches[0].offsetY
+            Dragarea.position.x = e.pageX || e.changedTouches[0].pageX
+            Dragarea.position.y = e.pageY || e.changedTouches[0].pageY
             Dragarea.hoverEle.ele.classList.add('current')
             // console.log(Dragarea.hoverEle);
 
@@ -63,10 +63,9 @@ window.addEventListener('DOMContentLoaded', e => {
         const dragareaobj = new Dragarea()
 
         Dragarea.click = true
-        dragareaobj.startPoint.x = e.offsetX || e.changedTouches[0].offsetX
-        dragareaobj.startPoint.y = e.offsetY || e.changedTouches[0].offsetY
-        // console.log(e.offsetX);
-        // console.log(e.offsetY);
+        dragareaobj.startPoint.x = e.pageX || e.changedTouches[0].pageX
+        dragareaobj.startPoint.y = e.pageY || e.changedTouches[0].pageY
+
         // ここで要素生成・DOMにマウント
         const ele = document.createElement('div')
             const handleEle = document.createElement('div')
@@ -76,15 +75,7 @@ window.addEventListener('DOMContentLoaded', e => {
         ele.className='dragarea'
         screen.appendChild(ele)
         dragareaobj.ele = ele
-        // dragareaobj.ele.addEventListener(Ev.move, e => {
-        //     // e.preventDefault();
-        //     e.stopPropagation()
-        // })
-        // dragareaobj.handleEle = handleEle
-        // dragareaobj.handleEle.addEventListener(Ev.move, e => {
-        //     // e.preventDefault();
-        //     e.stopPropagation()
-        // })
+        dragareaobj.handleEle = handleEle
 
         Dragarea.dragList[Dragarea.count] = dragareaobj
         // console.log(Dragarea.dragList[Dragarea.count]);
@@ -150,56 +141,54 @@ const pointerMove = e => {
 
     // e.preventDefault()
     // e.stopPropagation()
-    console.log(e.target);
 
     output.classList.remove('hidden')
 
-    if ((!e.offsetX || !e.offsetY) && !e.changedTouches) {
+    if ((!e.pageX || !e.pageY) && !e.changedTouches) {
         return
     }
-    console.dir(e.offsetX);
-    console.dir(e.offsetY);
-    const offsetX = e.offsetX || e.changedTouches[0].offsetX
-    const offsetY = e.offsetY || e.changedTouches[0].offsetY
+    
+    const pageX = e.pageX || e.changedTouches[0].pageX
+    const pageY = e.pageY || e.changedTouches[0].pageY
 
-    // console.log(offsetX);
+    // console.log(pageX);
 
     // outputの一番右端の座標
-    const outputX = offsetX + 10 + output.clientWidth < screen.clientWidth ? offsetX + 10 : offsetX - output.clientWidth - 10
+    const outputX = pageX + 10 + output.clientWidth < screen.clientWidth ? pageX + 10 : pageX - output.clientWidth - 10
     // outputの一番右下の座標
-    const outputY = offsetY + 10 + output.clientHeight < screen.clientHeight ? offsetY + 10 : offsetY - output.clientHeight - 10
+    const outputY = pageY + 10 + output.clientHeight < screen.clientHeight ? pageY + 10 : pageY - output.clientHeight - 10
     
     // outputが画面外に行かないようにする
     output.style.transform = `translate(${outputX}px, ${outputY}px)`
-    // output.style.left = offsetX + "px" // 挙動が鈍くなる
-    // output.style.top = offsetY + "px"
-    output.innerHTML = `X:${offsetX}, Y:${offsetY}`
+    // output.style.left = pageX + "px" // 挙動が鈍くなる
+    // output.style.top = pageY + "px"
+    output.innerHTML = `X:${pageX}, Y:${pageY}`
     
     
     const dragareaobj = !Dragarea.drag ? Dragarea.dragList[Dragarea.count] : Dragarea.hoverEle
     if (Dragarea.click && !Dragarea.drag && dragareaobj) {
-        const x = offsetX > dragareaobj.startPoint.x ? dragareaobj.startPoint.x : offsetX
-        const width = offsetX > dragareaobj.startPoint.x ? offsetX - dragareaobj.startPoint.x : dragareaobj.startPoint.x - offsetX
-        const y = offsetY > dragareaobj.startPoint.y ? dragareaobj.startPoint.y : offsetY
-        const height = offsetY > dragareaobj.startPoint.y ? offsetY - dragareaobj.startPoint.y : dragareaobj.startPoint.y - offsetY
+        // 要素生成時
+        const x = pageX > dragareaobj.startPoint.x ? dragareaobj.startPoint.x : pageX
+        const width = pageX > dragareaobj.startPoint.x ? pageX - dragareaobj.startPoint.x : dragareaobj.startPoint.x - pageX
+        const y = pageY > dragareaobj.startPoint.y ? dragareaobj.startPoint.y : pageY
+        const height = pageY > dragareaobj.startPoint.y ? pageY - dragareaobj.startPoint.y : dragareaobj.startPoint.y - pageY
         // console.log('ドラッグ中');
         // console.log(percentW(width)+"%");
         // console.log(percentH(height)+"%");
         // console.log(x+":"+y);
-        // dragareaobj.ele.style.transform = `translate(${x}px, ${y}px)` // 開始位置
-        dragareaobj.ele.style.top = y + "px"
-        dragareaobj.ele.style.left = x + "px"
+        dragareaobj.ele.style.transform = `translate(${x}px, ${y}px)` // 開始位置
         dragareaobj.ele.style.width = (width) + 'px'
         dragareaobj.ele.style.height = (height) + 'px'
-        output.innerHTML = `X:${offsetX}, Y:${offsetY}, Width:${width}, Height:${height}`
+        output.innerHTML = `X:${pageX}, Y:${pageY}, Width:${width}, Height:${height}`
 
     } else if(Dragarea.click && Dragarea.drag && dragareaobj){
+        // 要素範囲ドラッグ移動時
         // console.log('ドラッグ中');
 
-        const abx = offsetX - Dragarea.position.x // マウスが動いた差分計算
-        const aby = offsetY - Dragarea.position.y
-        Dragarea.position.x = offsetX // 差分比較位置更新
-        Dragarea.position.y = offsetY
+        const abx = pageX - Dragarea.position.x // マウスが動いた差分計算
+        const aby = pageY - Dragarea.position.y
+        Dragarea.position.x = pageX // 差分比較位置更新
+        Dragarea.position.y = pageY
         dragareaobj.endPoint.x += abx // 差分反映 // いらない？
         dragareaobj.endPoint.y += aby
         
@@ -207,14 +196,14 @@ const pointerMove = e => {
         if (Dragarea.handledrag) {
             // console.log('疑似要素');
             
-            // const width = offsetX - dragareaobj.startPoint.x
-            // const height = offsetY - dragareaobj.startPoint.y
+            // const width = pageX - dragareaobj.startPoint.x
+            // const height = pageY - dragareaobj.startPoint.y
             const width = parseInt(dragareaobj.ele.style.width.replace('px','')) + abx
             const height = parseInt(dragareaobj.ele.style.height.replace('px','')) + aby
             
             dragareaobj.ele.style.width = (width) + 'px'
             dragareaobj.ele.style.height = (height) + 'px'    
-            output.innerHTML = `X:${offsetX}, Y:${offsetY}, Width:${width}, Height:${height}`
+            output.innerHTML = `X:${pageX}, Y:${pageY}, Width:${width}, Height:${height}`
             dragareaobj.setListEle()
             
             return
@@ -226,9 +215,7 @@ const pointerMove = e => {
         const x = dragareaobj.startPoint.x
         const y = dragareaobj.startPoint.y
 
-        // dragareaobj.ele.style.transform = `translate(${x}px, ${y}px)` // 開始位置
-        dragareaobj.ele.style.top = y + "px"
-        dragareaobj.ele.style.left = x + "px"
+        dragareaobj.ele.style.transform = `translate(${x}px, ${y}px)` // 開始位置
         dragareaobj.setListEle()
 
         // console.log('hover');
