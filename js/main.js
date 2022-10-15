@@ -10,9 +10,26 @@ const Ev = {
 
 const output = document.getElementById('output')
 const screen = document.getElementById('screen')
+const screenImg = document.getElementById('img-frame')
 const list = document.getElementById('list')
 const listTemplate = document.getElementById('list-item-template')
 const imgInput = document.getElementById('img-input')
+
+const getScreenRect = () => {
+    // 要素の位置座標を取得
+    const screenClientRect = screenImg.getBoundingClientRect() ;
+
+    // 画面の左端から、要素の左端までの距離
+    const rectX = screenClientRect.left ;
+
+    // 画面の上端から、要素の上端までの距離
+    const rectY = screenClientRect.top ;
+
+    return {
+        x: rectX,
+        y: rectY
+    }
+}
 
 export { Ev, output, screen, list }
 
@@ -151,7 +168,7 @@ const pointerMove = e => {
     const pageX = e.pageX || e.changedTouches[0].pageX
     const pageY = e.pageY || e.changedTouches[0].pageY
 
-    // console.log(pageX);
+    console.log(pageX - getScreenRect().x);
 
     // outputの一番右端の座標
     const outputX = pageX + 10 + output.clientWidth < screen.clientWidth ? pageX + 10 : pageX - output.clientWidth - 10
