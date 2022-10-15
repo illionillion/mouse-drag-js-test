@@ -149,6 +149,7 @@ const pointerMove = e => {
     
     const dragareaobj = !Dragarea.drag ? Dragarea.dragList[Dragarea.count] : Dragarea.hoverEle
     if (Dragarea.click && !Dragarea.drag && dragareaobj) {
+        // 要素生成時
         const x = pageX > dragareaobj.startPoint.x ? dragareaobj.startPoint.x : pageX
         const width = pageX > dragareaobj.startPoint.x ? pageX - dragareaobj.startPoint.x : dragareaobj.startPoint.x - pageX
         const y = pageY > dragareaobj.startPoint.y ? dragareaobj.startPoint.y : pageY
@@ -163,6 +164,7 @@ const pointerMove = e => {
         output.innerHTML = `X:${pageX}, Y:${pageY}, Width:${width}, Height:${height}`
 
     } else if(Dragarea.click && Dragarea.drag && dragareaobj){
+        // 要素範囲ドラッグ移動時
         // console.log('ドラッグ中');
 
         const abx = pageX - Dragarea.position.x // マウスが動いた差分計算
