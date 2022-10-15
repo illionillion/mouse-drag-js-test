@@ -12,6 +12,7 @@ const output = document.getElementById('output')
 const screen = document.getElementById('screen')
 const list = document.getElementById('list')
 const listTemplate = document.getElementById('list-item-template')
+const imgInput = document.getElementById('img-input')
 
 export { Ev, output, screen, list }
 
@@ -25,6 +26,23 @@ window.addEventListener('DOMContentLoaded', e => {
     //     console.log(e);
     //     e.preventDefault()
     //     e.stopPropagation()
+    // })
+    
+    // imgInput.addEventListener('change', e => {
+    //     console.dir(imgInput.value);
+    //     console.dir(imgInput.files[0]);
+    //     const file = imgInput.files[0]
+    //     const reader = new FileReader()
+    //     if (file) {
+    //         reader.addEventListener('load', e => {
+    //             const imgEle = document.createElement('img')
+    //             imgEle.src = e.target.result
+    //             // imgEle.addEventListener(Ev.move, e => {e.preventDefault();e.stopPropagation()})
+    //             screen.appendChild(imgEle)
+    //             console.log(e.target.result);
+    //         })
+    //         reader.readAsDataURL(file)
+    //     }
     // })
 
     screen.addEventListener(Ev.down, e => {
