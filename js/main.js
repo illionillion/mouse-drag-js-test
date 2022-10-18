@@ -9,8 +9,9 @@ const Ev = {
 }
 
 const output = document.getElementById('output')
-const screen = document.getElementById('screen')
-const screenImg = document.getElementById('img-frame')
+// const screen = document.getElementById('screen')
+const screen = document.getElementById('img-frame').getElementsByTagName('img')[0]
+const screenImg = document.getElementById('img-frame').getElementsByTagName('img')[0]
 const list = document.getElementById('list')
 const listTemplate = document.getElementById('list-item-template')
 const imgInput = document.getElementById('img-input')
@@ -69,8 +70,8 @@ window.addEventListener('DOMContentLoaded', e => {
         if (Dragarea.hover) {
             Dragarea.click = true
             Dragarea.drag = true
-            Dragarea.position.x = e.pageX || e.changedTouches[0].pageX
-            Dragarea.position.y = e.pageY || e.changedTouches[0].pageY
+            Dragarea.position.x = (e.pageX || e.changedTouches[0].pageX)- getScreenRect().x
+            Dragarea.position.y = (e.pageY || e.changedTouches[0].pageY)- getScreenRect().y
             Dragarea.hoverEle.ele.classList.add('current')
             // console.log(Dragarea.hoverEle);
 
@@ -80,8 +81,8 @@ window.addEventListener('DOMContentLoaded', e => {
         const dragareaobj = new Dragarea()
 
         Dragarea.click = true
-        dragareaobj.startPoint.x = e.pageX || e.changedTouches[0].pageX
-        dragareaobj.startPoint.y = e.pageY || e.changedTouches[0].pageY
+        dragareaobj.startPoint.x = (e.pageX || e.changedTouches[0].pageX) - getScreenRect().x
+        dragareaobj.startPoint.y = (e.pageY || e.changedTouches[0].pageY) - getScreenRect().y
 
         // ここで要素生成・DOMにマウント
         const ele = document.createElement('div')
@@ -90,7 +91,7 @@ window.addEventListener('DOMContentLoaded', e => {
             handleEle.innerHTML = dragareaobj.id
             ele.appendChild(handleEle)
         ele.className='dragarea'
-        screen.appendChild(ele)
+        screen.parentElement.appendChild(ele)
         dragareaobj.ele = ele
         dragareaobj.handleEle = handleEle
 
@@ -179,7 +180,7 @@ const pointerMove = e => {
     output.style.transform = `translate(${outputX}px, ${outputY}px)`
     // output.style.left = pageX + "px" // 挙動が鈍くなる
     // output.style.top = pageY + "px"
-    output.innerHTML = `X:${pageX}, Y:${pageY}`
+    output.innerHTML = `X:${pageX - getScreenRect().x}, Y:${pageY - getScreenRect().y}`
     
     
     const dragareaobj = !Dragarea.drag ? Dragarea.dragList[Dragarea.count] : Dragarea.hoverEle
