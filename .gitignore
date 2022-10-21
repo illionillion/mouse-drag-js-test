@@ -2,3 +2,4 @@
 node_modules
 *.pdf
 *.png
+!map_white.png

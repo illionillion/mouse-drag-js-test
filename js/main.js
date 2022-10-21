@@ -70,8 +70,10 @@ window.addEventListener('DOMContentLoaded', e => {
         if (Dragarea.hover) {
             Dragarea.click = true
             Dragarea.drag = true
-            Dragarea.position.x = (e.pageX || e.changedTouches[0].pageX)- getScreenRect().x
-            Dragarea.position.y = (e.pageY || e.changedTouches[0].pageY)- getScreenRect().y
+            // Dragarea.position.x = (e.pageX || e.changedTouches[0].pageX)- getScreenRect().x
+            // Dragarea.position.y = (e.pageY || e.changedTouches[0].pageY)- getScreenRect().y
+            Dragarea.position.x = (e.pageX || e.changedTouches[0].pageX)
+            Dragarea.position.y = (e.pageY || e.changedTouches[0].pageY)
             Dragarea.hoverEle.ele.classList.add('current')
             // console.log(Dragarea.hoverEle);
 
@@ -81,8 +83,10 @@ window.addEventListener('DOMContentLoaded', e => {
         const dragareaobj = new Dragarea()
 
         Dragarea.click = true
-        dragareaobj.startPoint.x = (e.pageX || e.changedTouches[0].pageX) - getScreenRect().x
-        dragareaobj.startPoint.y = (e.pageY || e.changedTouches[0].pageY) - getScreenRect().y
+        // dragareaobj.startPoint.x = (e.pageX || e.changedTouches[0].pageX) - getScreenRect().x
+        // dragareaobj.startPoint.y = (e.pageY || e.changedTouches[0].pageY) - getScreenRect().y
+        dragareaobj.startPoint.x = (e.pageX || e.changedTouches[0].pageX)
+        dragareaobj.startPoint.y = (e.pageY || e.changedTouches[0].pageY)
 
         // ここで要素生成・DOMにマウント
         const ele = document.createElement('div')
@@ -180,7 +184,8 @@ const pointerMove = e => {
     output.style.transform = `translate(${outputX}px, ${outputY}px)`
     // output.style.left = pageX + "px" // 挙動が鈍くなる
     // output.style.top = pageY + "px"
-    output.innerHTML = `X:${pageX - getScreenRect().x}, Y:${pageY - getScreenRect().y}`
+    // output.innerHTML = `X:${pageX - getScreenRect().x}, Y:${pageY - getScreenRect().y}`
+    output.innerHTML = `X:${pageX}, Y:${pageY}`
     
     
     const dragareaobj = !Dragarea.drag ? Dragarea.dragList[Dragarea.count] : Dragarea.hoverEle
