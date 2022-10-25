@@ -1,0 +1,52 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>マウスドラッグ</title>
+    <link rel="stylesheet" href="css/style.css">
+    <script type="module" src="./remakejs/main.js"></script>
+</head>
+<body>
+    <section id="frame">
+        <div id="screen">
+            <div id="img-frame">
+                <div id="output"></div>
+                <img src="./map_white.png" alt="" srcset="">
+            </div>
+            <!-- <img src="" alt="" class="hidden"> -->
+        </div>
+        <hr class="frame-hr">
+        <div id="list">
+            <div id="control">
+                <div class="file-button">
+                    <!-- <input type="button" value="作成"> -->
+                    <input type="file" name="" id="img-input" accept="image/*">
+                </div>
+                <div class="reset-button">
+                    <input type="button" value="リセット">
+                </div>
+            </div>
+            <ul></ul>
+        </div>
+    </section>
+    <template id="list-item-template">
+        <li data-drag-id="">
+            <div class="number-box">
+                <p class="li-number"></p>
+            </div>
+            <div class="input-box">
+                x:<input type="number" data-px-type="x" class="xpx">px
+                y:<input type="number" data-px-type="y" class="ypx">px
+                <br>
+                w:<input type="number" data-px-type="w" class="wpx">px
+                h:<input type="number" data-px-type="h" class="hpx">px
+            </div>
+            <div class="delete-box">
+                <input type="button" value="削除" class="delete-button">
+            </div>
+        </li>
+    </template>
+</body>
+</html>
