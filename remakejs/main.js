@@ -77,15 +77,34 @@ const list = document.getElementById('list')
 const listTemplate = document.getElementById('list-item-template')
 const imgInput = document.getElementById('img-input')
 
+const getScreenRect = () => {
+    // 要素の位置座標を取得
+    const screenClientRect = screenImg.getBoundingClientRect() ;
+
+    // 画面の左端から、要素の左端までの距離
+    const rectX = screenClientRect.x ;
+
+    // 画面の上端から、要素の上端までの距離
+    const rectY = screenClientRect.y ;
+
+    return {
+        x: rectX,
+        y: rectY
+    }
+}
+
 export { Ev, output, screen, screenImg, list }
 
 const init = () => {
     // マウス動いた時
-    screenImg.addEventListener(Ev.move, pointerMove, {passive: true})
+    // screenImg.addEventListener(Ev.move, pointerMove, {passive: true})
+    screen.addEventListener(Ev.move, pointerMove, {passive: true})
     // マウスクリック時
-    screenImg.addEventListener(Ev.down, pointerDown)
+    screen.addEventListener(Ev.down, pointerDown)
+    // screenImg.addEventListener(Ev.down, pointerDown)
     // マウスクリック解除時
-    screenImg.addEventListener(Ev.up, pointerUp)
+    screen.addEventListener(Ev.up, pointerUp)
+    // screenImg.addEventListener(Ev.up, pointerUp)
     
 }
 
@@ -99,24 +118,25 @@ const pointerMove = e => {
     output.classList.remove('hidden')
 
     // マウスがundefinedになる時の対処法
-    if ((!e.offsetX || !e.offsetY)) {
+    if ((!e.pageX || !e.pageY)) {
         return
     }
 
-    // 画像上のX:Yを取得
-    const offsetX = e.offsetX
-    const offsetY = e.offsetY
+    // 画面外の時にreturn
 
+    // 画像上のX:Yを取得
+    const pageX = e.pageX - getScreenRect().x
+    const pageY = e.pageY - getScreenRect().y
     // outputの一番右端の座標
-    const outputX = offsetX + 10 + output.clientWidth < screenImg.clientWidth ? offsetX + 10 : offsetX - output.clientWidth - 10
-    // const outputX = offsetX//offsetX + 10 + output.clientWidth < screenImg.clientWidth ? offsetX + 10 : offsetX - output.clientWidth - 10
+    const outputX = pageX + 10 + output.clientWidth < screenImg.clientWidth ? pageX + 10 : pageX - output.clientWidth - 10
+    // const outputX = pageX//pageX + 10 + output.clientWidth < screenImg.clientWidth ? pageX + 10 : pageX - output.clientWidth - 10
     // outputの一番右下の座標
-    const outputY = offsetY + 10 + output.clientHeight < screenImg.clientHeight ? offsetY + 10 : offsetY - output.clientHeight - 10
-    // const outputY = offsetY//offsetY + 10 + output.clientHeight < screenImg.clientHeight ? offsetY + 10 : offsetY - output.clientHeight - 10
+    const outputY = pageY + 10 + output.clientHeight < screenImg.clientHeight ? pageY + 10 : pageY - output.clientHeight - 10
+    // const outputY = pageY//pageY + 10 + output.clientHeight < screenImg.clientHeight ? pageY + 10 : pageY - output.clientHeight - 10
     
     // outputが画面外に行かないようにする
     output.style.transform = `translate(${outputX}px, ${outputY}px)`
-    output.innerHTML = `X:${offsetX}, Y:${offsetY}`
+    output.innerHTML = `X:${pageX}, Y:${pageY}`
 
     // if (DragArea.resizeFlag && !DragArea.moveFlag) {
     if (DragArea.resizeFlag) {
@@ -134,7 +154,7 @@ const pointerMove = e => {
     // console.log(e.clientX + ":" + e.clientY);
     // console.log(e.screenX + ":" + e.screenY);
     // console.log(e.movementX + ":" + e.movementY);
-    // console.log(e.pageX + ":" + e.offsetY);
+    // console.log(e.pageX + ":" + e.pageY);
 
 }
 
@@ -144,7 +164,7 @@ const pointerMove = e => {
  */
 const pointerDown = e => {
     // マウスがundefinedになる時の対処法
-    if ((!e.offsetX || !e.offsetY)) {
+    if ((!e.pageX || !e.pageY)) {
         return
     }
     if (DragArea.resizeFlag) {
@@ -154,21 +174,21 @@ const pointerDown = e => {
     DragArea.resizeFlag = true
 
     // 画像上のX:Yを取得
-    const offsetX = e.offsetX
-    const offsetY = e.offsetY
+    const pageX = e.pageX - getScreenRect().x
+    const pageY = e.pageY - getScreenRect().y
 
     const count = DragArea.dragCount
-    const dragarea = new DragArea(offsetX, offsetY)
+    const dragarea = new DragArea(pageX, pageY)
     DragArea.dragArray[count] = dragarea
     DragArea.nowInstance = dragarea
 
-    console.log(offsetX + " : " + offsetY);
+    console.log(pageX + " : " + pageY);
 
     // ここで要素生成・DOMにマウント
     const dragEle = document.createElement('div')
     // 初期位置設定
-    dragEle.style.left = `${offsetX}px`
-    dragEle.style.top = `${offsetY}px`
+    dragEle.style.left = `${pageX}px`
+    dragEle.style.top = `${pageY}px`
     
     
     const handleEle = document.createElement('div')
@@ -183,25 +203,26 @@ const pointerDown = e => {
 }
 
 const pointerUp = e => {
-    if ((!e.offsetX || !e.offsetY)) {
+    if ((!e.pageX || !e.pageY)) {
         return
     }
 
     DragArea.resizeFlag = false
 
     // 画像上のX:Yを取得
-    const offsetX = e.offsetX
-    const offsetY = e.offsetY
+    const pageX = e.pageX - getScreenRect().x
+    const pageY = e.pageY - getScreenRect().y
 
     const nowInstance = DragArea.nowInstance
 
-    nowInstance.end.x = offsetX
-    nowInstance.end.y = offsetY
+    nowInstance.end.x = pageX
+    nowInstance.end.y = pageY
 
     nowInstance.handleEle.addEventListener(Ev.down, e => {
-        if (DragArea.moveFlag) {
-            return
-        }
+        // if (DragArea.moveFlag) {
+        //     return
+        // }
+        DragArea.moveFlag = false
         DragArea.resizeFlag = true
         DragArea.nowInstance = nowInstance
     })
@@ -209,9 +230,10 @@ const pointerUp = e => {
         DragArea.resizeFlag = false
     })
     nowInstance.dragEle.addEventListener(Ev.down, e => {
-        if (DragArea.resizeFlag) {
-            return
-        }
+        // if (DragArea.resizeFlag) {
+            //     return
+            // }
+        DragArea.resizeFlag = false
         DragArea.moveFlag = true
         DragArea.nowInstance = nowInstance
     })
