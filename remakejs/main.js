@@ -49,11 +49,17 @@ class DragArea {
         this.dragEle.style.width = `${this.width}px`
         this.dragEle.style.height = `${this.height}px`
         
-        
-        // const x = pageX > dragareaobj.startPoint.x ? dragareaobj.startPoint.x : pageX
-        // const width = pageX > dragareaobj.startPoint.x ? pageX - dragareaobj.startPoint.x : dragareaobj.startPoint.x - pageX
-        // const y = pageY > dragareaobj.startPoint.y ? dragareaobj.startPoint.y : pageY
-        // const height = pageY > dragareaobj.startPoint.y ? pageY - dragareaobj.startPoint.y : dragareaobj.startPoint.y - pageY
+        if (this.width <= 0) {
+            this.dragEle.style.width = `${ - this.width}px`
+            this.start.x += moveX
+            this.dragEle.style.left = `${this.start.x}px`
+            
+        }
+        if (this.height <= 0) {
+            this.dragEle.style.height = `${ - this.height}px`
+            this.start.y += moveY
+            this.dragEle.style.top = `${this.start.y}px`
+        }
         
     }
     
@@ -122,17 +128,25 @@ const pointerMove = e => {
         return
     }
 
-    // 画面外の時にreturn
-
+    
     // 画像上のX:Yを取得
-    const pageX = e.pageX - getScreenRect().x
-    const pageY = e.pageY - getScreenRect().y
+    const pageX = parseInt(e.pageX - getScreenRect().x)
+    const pageY = parseInt(e.pageY - getScreenRect().y)
+
+    // 画面外の時にreturn
+    if (pageX < 0 || pageY < 0) {
+        output.classList.add('hidden')
+        return
+    }
+    if (pageX > screenImg.clientLeft + screenImg.clientWidth || pageY > screen.clientTop + screenImg.clientHeight) {
+        output.classList.add('hidden')
+        return
+    }
+
     // outputの一番右端の座標
     const outputX = pageX + 10 + output.clientWidth < screenImg.clientWidth ? pageX + 10 : pageX - output.clientWidth - 10
-    // const outputX = pageX//pageX + 10 + output.clientWidth < screenImg.clientWidth ? pageX + 10 : pageX - output.clientWidth - 10
     // outputの一番右下の座標
     const outputY = pageY + 10 + output.clientHeight < screenImg.clientHeight ? pageY + 10 : pageY - output.clientHeight - 10
-    // const outputY = pageY//pageY + 10 + output.clientHeight < screenImg.clientHeight ? pageY + 10 : pageY - output.clientHeight - 10
     
     // outputが画面外に行かないようにする
     output.style.transform = `translate(${outputX}px, ${outputY}px)`
@@ -147,7 +161,6 @@ const pointerMove = e => {
     if (DragArea.moveFlag) {
         const nowInstance = DragArea.nowInstance
         nowInstance.dragMove(e.movementX, e.movementY)
-        
     }
 
     // そのほか
@@ -174,8 +187,8 @@ const pointerDown = e => {
     DragArea.resizeFlag = true
 
     // 画像上のX:Yを取得
-    const pageX = e.pageX - getScreenRect().x
-    const pageY = e.pageY - getScreenRect().y
+    const pageX = parseInt(e.pageX - getScreenRect().x)
+    const pageY = parseInt(e.pageY - getScreenRect().y)
 
     const count = DragArea.dragCount
     const dragarea = new DragArea(pageX, pageY)
@@ -218,28 +231,28 @@ const pointerUp = e => {
     nowInstance.end.x = pageX
     nowInstance.end.y = pageY
 
-    nowInstance.handleEle.addEventListener(Ev.down, e => {
-        // if (DragArea.moveFlag) {
-        //     return
-        // }
-        DragArea.moveFlag = false
-        DragArea.resizeFlag = true
-        DragArea.nowInstance = nowInstance
-    })
-    nowInstance.handleEle.addEventListener(Ev.up, e => {
-        DragArea.resizeFlag = false
-    })
-    nowInstance.dragEle.addEventListener(Ev.down, e => {
-        // if (DragArea.resizeFlag) {
-            //     return
-            // }
-        DragArea.resizeFlag = false
-        DragArea.moveFlag = true
-        DragArea.nowInstance = nowInstance
-    })
-    nowInstance.dragEle.addEventListener(Ev.up, e => {
-        DragArea.moveFlag = false
-    })
+    // nowInstance.handleEle.addEventListener(Ev.down, e => {
+    //     if (DragArea.moveFlag) {
+    //         return
+    //     }
+    //     DragArea.nowInstance = nowInstance
+    //     DragArea.moveFlag = false
+    //     DragArea.resizeFlag = true
+    // })
+    // nowInstance.handleEle.addEventListener(Ev.up, e => {
+    //     DragArea.resizeFlag = false
+    // })
+    // nowInstance.dragEle.addEventListener(Ev.down, e => {
+    //     if (DragArea.resizeFlag) {
+    //         return
+    //     }
+    //     DragArea.nowInstance = nowInstance
+    //     DragArea.resizeFlag = false
+    //     DragArea.moveFlag = true
+    // })
+    // nowInstance.dragEle.addEventListener(Ev.up, e => {
+    //     DragArea.moveFlag = false
+    // })
     
 }
 
