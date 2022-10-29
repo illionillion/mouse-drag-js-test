@@ -37,29 +37,39 @@ class DragArea {
     /**
      * ドラッグでサイズ変更
      */
-    dragResize = (moveX, moveY) => {
-        console.log('dragResize');
+    dragResize = (pageX, pageY) => {
+        // console.log('dragResize');
         // 動いた分取得
-        // const moveX = e.movementX
-        // const moveY = e.movementY
 
-        this.width += moveX
-        this.height += moveY
+        // this.width += pageX
+        // this.height += pageY
+
+        
+        const x = pageX > this.start.x ? this.start.x : pageX
+        const width = pageX > this.start.x ? pageX - this.start.x : this.start.x - pageX
+        const y = pageY > this.start.y ? this.start.y : pageY
+        const height = pageY > this.start.y ? pageY - this.start.y : this.start.y - pageY
+        // this.start.x = x
+        // this.start.y = y
+        this.width = width
+        this.height = height
 
         this.dragEle.style.width = `${this.width}px`
         this.dragEle.style.height = `${this.height}px`
+        this.dragEle.style.left = `${x}px`
+        this.dragEle.style.top = `${y}px`
         
-        if (this.width <= 0) {
-            this.dragEle.style.width = `${ - this.width}px`
-            this.start.x += moveX
-            this.dragEle.style.left = `${this.start.x}px`
+        // if (this.width <= 0) {
+        //     this.dragEle.style.width = `${ - this.width}px`
+        //     this.start.x += moveX
+        //     this.dragEle.style.left = `${this.start.x}px`
             
-        }
-        if (this.height <= 0) {
-            this.dragEle.style.height = `${ - this.height}px`
-            this.start.y += moveY
-            this.dragEle.style.top = `${this.start.y}px`
-        }
+        // }
+        // if (this.height <= 0) {
+        //     this.dragEle.style.height = `${ - this.height}px`
+        //     this.start.y += moveY
+        //     this.dragEle.style.top = `${this.start.y}px`
+        // }
         
     }
     
@@ -83,20 +93,25 @@ const list = document.getElementById('list')
 const listTemplate = document.getElementById('list-item-template')
 const imgInput = document.getElementById('img-input')
 
+/**
+ * 
+ * @returns {DOMRect}
+ */
 const getScreenRect = () => {
     // 要素の位置座標を取得
     const screenClientRect = screenImg.getBoundingClientRect() ;
 
-    // 画面の左端から、要素の左端までの距離
-    const rectX = screenClientRect.x ;
+    // // 画面の左端から、要素の左端までの距離
+    // const rectX = screenClientRect.x ;
 
-    // 画面の上端から、要素の上端までの距離
-    const rectY = screenClientRect.y ;
+    // // 画面の上端から、要素の上端までの距離
+    // const rectY = screenClientRect.y ;
 
-    return {
-        x: rectX,
-        y: rectY
-    }
+    // return {
+    //     x: rectX,
+    //     y: rectY
+    // }
+    return screenClientRect
 }
 
 export { Ev, output, screen, screenImg, list }
@@ -115,11 +130,30 @@ const init = () => {
 }
 
 /**
+ * 画面外の時にtrueをreturn
+ * @param {number} pageX 
+ * @param {number} pageY 
+ * @returns {boolean}
+ */
+const ifOutScreen = (pageX, pageY) => {
+    if (pageX < 0 || pageY < 0) {
+        output.classList.add('hidden')
+        return true
+    }
+    if (pageX > screenImg.clientLeft + screenImg.clientWidth || pageY > screenImg.clientTop + screenImg.clientHeight) {
+    // if (pageX > getScreenRect().left + getScreenRect().width || pageY > getScreenRect().top + getScreenRect().height) {
+        output.classList.add('hidden')
+        return true
+    }
+    return false
+}
+
+/**
  * マウスを動かした時
  * @param {MouseEvent} e 
  */
 const pointerMove = e => {
-    console.log('pointerMove');
+    // console.log('pointerMove');
 
     output.classList.remove('hidden')
 
@@ -130,18 +164,12 @@ const pointerMove = e => {
 
     
     // 画像上のX:Yを取得
-    const pageX = parseInt(e.pageX - getScreenRect().x)
-    const pageY = parseInt(e.pageY - getScreenRect().y)
+    // const pageX = parseInt(e.pageX - getScreenRect().x)
+    const pageX = (e.pageX - getScreenRect().x)
+    // const pageY = parseInt(e.pageY - getScreenRect().y)
+    const pageY = (e.pageY - getScreenRect().y)
 
-    // 画面外の時にreturn
-    if (pageX < 0 || pageY < 0) {
-        output.classList.add('hidden')
-        return
-    }
-    if (pageX > screenImg.clientLeft + screenImg.clientWidth || pageY > screen.clientTop + screenImg.clientHeight) {
-        output.classList.add('hidden')
-        return
-    }
+    if(ifOutScreen(pageX, pageY)) return
 
     // outputの一番右端の座標
     const outputX = pageX + 10 + output.clientWidth < screenImg.clientWidth ? pageX + 10 : pageX - output.clientWidth - 10
@@ -150,12 +178,12 @@ const pointerMove = e => {
     
     // outputが画面外に行かないようにする
     output.style.transform = `translate(${outputX}px, ${outputY}px)`
-    output.innerHTML = `X:${pageX}, Y:${pageY}`
+    output.innerHTML = `X:${parseInt(pageX)}, Y:${parseInt(pageY)}`
 
     // if (DragArea.resizeFlag && !DragArea.moveFlag) {
     if (DragArea.resizeFlag) {
         const nowInstance = DragArea.nowInstance
-        nowInstance.dragResize(e.movementX, e.movementY)
+        nowInstance.dragResize(pageX, pageY)
     }
     // if (!DragArea.resizeFlag && DragArea.moveFlag) {
     if (DragArea.moveFlag) {
@@ -180,15 +208,18 @@ const pointerDown = e => {
     if ((!e.pageX || !e.pageY)) {
         return
     }
+    
+    // 画像上のX:Yを取得
+    const pageX = (e.pageX - getScreenRect().x)
+    const pageY = (e.pageY - getScreenRect().y)
+    
+    if(ifOutScreen(pageX, pageY)) return
+
     if (DragArea.resizeFlag) {
         return
     }
 
     DragArea.resizeFlag = true
-
-    // 画像上のX:Yを取得
-    const pageX = parseInt(e.pageX - getScreenRect().x)
-    const pageY = parseInt(e.pageY - getScreenRect().y)
 
     const count = DragArea.dragCount
     const dragarea = new DragArea(pageX, pageY)
@@ -216,6 +247,7 @@ const pointerDown = e => {
 }
 
 const pointerUp = e => {
+
     if ((!e.pageX || !e.pageY)) {
         return
     }
@@ -227,7 +259,9 @@ const pointerUp = e => {
     const pageY = e.pageY - getScreenRect().y
 
     const nowInstance = DragArea.nowInstance
-
+    if (!nowInstance) {
+        return
+    }
     nowInstance.end.x = pageX
     nowInstance.end.y = pageY
 
